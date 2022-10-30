@@ -1,20 +1,22 @@
 #include <iostream>
 #include "solution.h"
 
-int solution(const std::string &reg, char x) {
+int solution(const std::string &regex_str, char x_given) {
     bool error = false;
     std::stack<regular_expression> polish_stack;     // stack with information about read part of regex
-    for (char symbol: reg) {
-        if (symbol == 'a' || symbol == 'b' || symbol == 'c' || symbol == '1') {
-            polish_stack.push(regular_expression(symbol, x));       // if letter/1, put on top of stack
-        } else {
-            if (symbol == '*') {
+    for (char symbol: regex_str) {
+        switch(symbol) {
+            case '*':
                 error = asterisk(polish_stack, symbol);     // if Kleene star
                 if (error) return -1;
-            } else {
+                break;
+            case '+':
+            case '.':
                 error = plus_or_dot(polish_stack, symbol);      // if Kleene plus or concatenation
                 if (error) return -1;
-            }
+                break;
+            default:
+                polish_stack.push(regular_expression(symbol, x_given));
         }
     }
 
@@ -49,6 +51,8 @@ bool plus_or_dot(std::stack<regular_expression> &polish_stack, char symbol) {
         polish_stack.push(first);
         return false;
     }
-    polish_stack.push(regular_expression(first, second, symbol));
+    regular_expression reg;
+    if(symbol == '+') polish_stack.push(reg.from_plus(first, second));
+    if(symbol == '.') polish_stack.push(reg.from_dot(first, second));
     return false;
 }

@@ -16,11 +16,13 @@ public:
 
     ~regular_expression() = default;
 
-    regular_expression(char y, char x);  // letter and x
+    regular_expression(char letter, char x_given);  // letter and x
 
-    regular_expression(regular_expression &reg1, regular_expression &reg2, char y);   // 2 regex-s and operation(+ or .)
+    regular_expression from_dot(regular_expression &reg1, regular_expression &reg2);   // 2 regex-s and operation(.)
 
-    regular_expression(regular_expression &reg1, char y);   // regex and operation(*)
+    regular_expression from_plus(regular_expression &reg1, regular_expression &reg2);   // 2 regex-s and operation(+)
+
+    regular_expression(regular_expression &reg1, char);   // regex and operation(*)
 
     bool is1() const;        // returns is_1 value
 
